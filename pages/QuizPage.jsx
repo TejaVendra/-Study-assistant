@@ -24,24 +24,61 @@ export default function QuizPage() {
     }
   }
 
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter' && !loading) {
+      fetchQuiz()
+    }
+  }
+
   return (
-    <div className="grid" style={{ display: 'grid', gap: 16 }}>
-      <div className="card">
-        <h2 className="section-title">Load Quiz</h2>
-        <div className="row">
-          <input
-            className="input"
-            placeholder="Uploaded file id"
-            value={uploadedId}
-            onChange={(e) => setUploadedId(e.target.value)}
-          />
-          <button className="btn" onClick={fetchQuiz} disabled={loading}>
-            {loading ? 'Loading…' : 'Load Quiz'}
-          </button>
-        </div>
-        {error && <p style={{ color: 'var(--danger)', marginTop: 8 }}>{error}</p>}
+    <div className="page-container">
+      <div className="page-header">
+        <h1 className="page-title">Quiz Generator</h1>
+        <p className="page-subtitle">Enter a file ID to generate and take a quiz</p>
       </div>
-      <QuizView quiz={quiz} />
+
+      <div className="input-card">
+        <div className="input-section">
+          <label className="input-label">File ID</label>
+          <div className="input-group">
+            <input
+              className="input-field"
+              type="text"
+              placeholder="Enter uploaded file ID (e.g., 123)"
+              value={uploadedId}
+              onChange={(e) => setUploadedId(e.target.value)}
+              onKeyPress={handleKeyPress}
+            />
+            <button 
+              className="btn btn-primary" 
+              onClick={fetchQuiz} 
+              disabled={loading || !uploadedId.trim()}
+            >
+              {loading ? (
+                <>
+                  <span className="loading-spinner"></span>
+                  Loading...
+                </>
+              ) : (
+                <>
+                  <span className="btn-icon">🔍</span>
+                  Load Quiz
+                </>
+              )}
+            </button>
+          </div>
+          {error && (
+            <div className="error-message">
+              <span className="error-icon">⚠️</span>
+              {error}
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="quiz-container">
+        <QuizView quiz={quiz} />
+      </div>
     </div>
   )
 }
